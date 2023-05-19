@@ -41,15 +41,20 @@ public class Client {
     }
 
     private static String printString(String text, String hn) {
+
         try (com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(new String[0], "client.cfg")) {
             com.zeroc.Ice.ObjectPrx base = communicator.propertyToProxy("Service.Proxy");
             Demo.PrinterPrx printer = Demo.PrinterPrx.checkedCast(base);
+            com.zeroc.Ice.ObjectAdapter adapter = communicator.createObjectAdapter("Callback");
+            com.zeroc.Ice.Object object = new CallbackI();
+            com.zeroc.Ice.ObjectPrx objPrx= adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("callback"));
+            adapter.activate();
 
             if (printer == null) {
                 throw new Error("Invalid proxy");
             }
-
-            return printer.printString(text, hn);
+            Demo.CallbackPrx callPrx = Demo.CallbackPrx.uncheckedCast(objPrx);
+            return printer.printString(text,hn,callPrx);
         }
     }
 }

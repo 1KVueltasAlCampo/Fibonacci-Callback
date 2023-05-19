@@ -2,8 +2,22 @@ import java.math.BigInteger;
 
 public class PrinterI implements Demo.Printer
 {
-    public String printString(String s,String hostname, com.zeroc.Ice.Current current)
+    public String printString(String s,String hostname,Demo.CallbackPrx cl com.zeroc.Ice.Current current)
     {
+		new Thread(()->{
+
+			generateAnswer(s, hostname);
+			try{
+			Thread.sleep(2000);
+			cl.response("rutina terminada");
+		}catch(Exception e){
+		}
+			  }).start();        
+				 
+    	
+    }
+
+	private String generateAnswer(String s, String hostname){
 		String response = "";
 		if(s.matches("[0-9]+")){
 			long num = Long.parseLong(s);
@@ -17,8 +31,7 @@ public class PrinterI implements Demo.Printer
 
 		System.out.println("");
 		return response+"";
-    	
-    }
+	}
 
 
     private String fibonacci(long posicion) {
@@ -33,4 +46,22 @@ public class PrinterI implements Demo.Printer
 		return actual.toString(0);
 		
 	}
+}
+
+public class PrinterI implements Demo.Printer
+{
+    public void printString(String s, Demo.CallbackPrx  cl, com.zeroc.Ice.Current current)
+    {
+	new Thread(()->{
+
+	System.out.println(s);
+	try{
+	Thread.sleep(2000);
+	cl.response("rutina terminada");
+}catch(Exception e){
+}
+      }).start();        
+         
+
+    }
 }

@@ -15,14 +15,14 @@
 
 package Demo;
 
-public interface Printer extends com.zeroc.Ice.Object
+public interface Callback extends com.zeroc.Ice.Object
 {
-    String printString(String s, String hostname, CallbackPrx cl, com.zeroc.Ice.Current current);
+    void response(String rs, com.zeroc.Ice.Current current);
 
     /** @hidden */
     static final String[] _iceIds =
     {
-        "::Demo::Printer",
+        "::Demo::Callback",
         "::Ice::Object"
     };
 
@@ -40,7 +40,7 @@ public interface Printer extends com.zeroc.Ice.Object
 
     static String ice_staticId()
     {
-        return "::Demo::Printer";
+        return "::Demo::Callback";
     }
 
     /**
@@ -50,22 +50,15 @@ public interface Printer extends com.zeroc.Ice.Object
      * @param current -
      * @return -
     **/
-    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_printString(Printer obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_response(Callback obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         com.zeroc.Ice.InputStream istr = inS.startReadParams();
-        String iceP_s;
-        String iceP_hostname;
-        CallbackPrx iceP_cl;
-        iceP_s = istr.readString();
-        iceP_hostname = istr.readString();
-        iceP_cl = CallbackPrx.uncheckedCast(istr.readProxy());
+        String iceP_rs;
+        iceP_rs = istr.readString();
         inS.endReadParams();
-        String ret = obj.printString(iceP_s, iceP_hostname, iceP_cl, current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeString(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
+        obj.response(iceP_rs, current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     /** @hidden */
@@ -75,7 +68,7 @@ public interface Printer extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "printString"
+        "response"
     };
 
     /** @hidden */
@@ -109,7 +102,7 @@ public interface Printer extends com.zeroc.Ice.Object
             }
             case 4:
             {
-                return _iceD_printString(this, in, current);
+                return _iceD_response(this, in, current);
             }
         }
 
