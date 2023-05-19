@@ -1,4 +1,14 @@
-swarch    2767  0.0  0.0 113260  1520 ?        Ss   11:48   0:00 bash -c cd fbcallbackJDJS && nohup java -jar *.jar
-swarch    2793  1.8  0.1 11476676 45520 ?      Sl   11:48   0:00 java -jar server.jar
-swarch    3003  0.0  0.0 113260  1524 ?        Ss   11:49   0:00 bash -c ps aux | grep 'java -jar' >> fbcallbackJDJS/server_log.txt
-swarch    3031  0.0  0.0 112788   716 ?        S    11:49   0:00 grep java -jar
+hgrid4.icesi.edu.co: 1,1
+hgrid16.icesi.edu.co: 1,1
+hgrid10.icesi.edu.co: 1,1
+hgrid2.icesi.edu.co: 1,1
+hgrid14.icesi.edu.co: 1,1
+hgrid12.icesi.edu.co: 1,1
+hgrid7.icesi.edu.co: 1,1
+hgrid1.icesi.edu.co: 1,1
+hgrid15.icesi.edu.co: 1,1
+hgrid3.icesi.edu.co: 1,1
+hgrid11.icesi.edu.co: 1,1
+hgrid5.icesi.edu.co: 1,1
+hgrid17.icesi.edu.co: 1,1
+hgrid13.icesi.edu.co: 1,1

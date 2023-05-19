@@ -40,4 +40,6 @@ for client in "${array_client[@]}"; do
 
     sshpass -p $password scp ./client/build/libs/client.jar $client_id:./$path
 
+    echo $client+" ready"
+
 done

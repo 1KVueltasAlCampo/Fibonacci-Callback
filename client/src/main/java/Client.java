@@ -18,6 +18,7 @@ public class Client {
 
         if (args.length > 0) {
             String text = args[0];
+            System.out.println("Sending: " + text);
             String result = printString(text, hn);
             System.out.println("Result: " + result);
         } else {
