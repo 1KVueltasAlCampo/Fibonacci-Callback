@@ -2,6 +2,7 @@ import java.math.BigInteger;
 
 public class PrinterI implements Demo.Printer
 {
+	/*
     public String printString(String s,String hostname, com.zeroc.Ice.Current current)
     {
 		String response = "";
@@ -32,5 +33,20 @@ public class PrinterI implements Demo.Printer
 		// Si no quieres imprimirla, comenta la siguiente línea:
 		return actual.toString(0);
 		
+	}*/
+
+	public void printString(String s, Demo.CallbackPrx  cl, com.zeroc.Ice.Current current)
+	{
+		new Thread(()->{
+
+			System.out.println(s);
+			try{
+				Thread.sleep(2000);
+				cl.response("rutina terminada");
+			}catch(Exception e){
+			}
+		}).start();
+
+
 	}
 }
