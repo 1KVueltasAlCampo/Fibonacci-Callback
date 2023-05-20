@@ -18,8 +18,6 @@ public class CallbackI implements Demo.Callback {
      */
     @Override
     public synchronized String waitForResult(Current current) {
-        System.out.println("Waiting for result...");
-        System.out.println("Result: " + result);
         while (result == null) {
             try{
                 wait();

@@ -11,7 +11,7 @@ public class PrinterI implements Demo.Printer {
     public String printString(String message, String hostname, CallbackPrx proxy, Current current) {
         Handler handler = Handler.getInstance();
         Logic logic = new Logic(hostname+":"+message, proxy, Handler.getInstance());
-        handler.addClient((m) -> m.split(":", 2)[0], message, proxy);
+        handler.addClient(hostname, proxy);
         Future<String> future = handler.executeTask(logic);
         try {
             return future.get(); // Espera y obtiene el resultado de la tarea

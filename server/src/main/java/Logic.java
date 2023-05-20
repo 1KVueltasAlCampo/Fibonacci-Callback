@@ -65,6 +65,7 @@ public class Logic implements Callable<String> {
             if (number > 0) {
                 System.out.print(message.split(":", 2)[0]+" ");
                 response = fibonacci(number);
+                System.out.println("");
             }
         } catch (Exception e) {
             System.out.println("Fibonacci number must be a positive integer");

@@ -41,8 +41,7 @@ public class Handler {
         return this.threadPool.submit(logic);
     }
 
-    public void addClient(ToText trans, String message, CallbackPrx client) {
-        String hostname = trans.toText(message);
+    public void addClient(String hostname, CallbackPrx client) {
         try {
             this.semaphore.acquire();
             if (!this.clientMap.containsKey(hostname)) {

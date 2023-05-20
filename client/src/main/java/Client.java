@@ -21,10 +21,12 @@ public class Client {
         if (server == null || client == null)
             throw new Error("Invalid proxy");
 
-        if (args.length > 0) {
+        int argsN = args.length;
+        if (argsN > 0) {
             String text = args[0];
             System.out.println("Sending: " + text);
             String result = runProgram(server, client, text);
+            argsN=0;
         } else {
             runProgram(server, client);
         }
