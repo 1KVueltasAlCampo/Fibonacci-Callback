@@ -1,60 +1,91 @@
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
+
+import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.ObjectPrx;
+import com.zeroc.Ice.Util;
+
+import Demo.CallbackPrx;
+import Demo.PrinterPrx;
 
 public class Client {
-    public static void main(String[] args) throws IOException {
-        String hn = "unknown host address: ";
+    static com.zeroc.Ice.Communicator communicator;
 
-        try {
-            InetAddress addr = InetAddress.getLocalHost();
-            String hostname = addr.getHostName();
-            hn = hostname + ": ";
-        } catch (UnknownHostException e) {
-            System.out.print("unknown host address: ");
-        }
+    public static void main(String[] args) {
+        java.util.List<String> extraArgs = new java.util.ArrayList<>();
+        communicator = com.zeroc.Ice.Util.initialize(args, "client.cfg", extraArgs);
+        Demo.PrinterPrx server = serverConfiguration();
+        Demo.CallbackPrx client = clientConfiguration();
+        if (server == null || client == null)
+            throw new Error("Invalid proxy");
 
-        if (args.length > 0) {
+        int argsN = args.length;
+        if (argsN > 0) {
             String text = args[0];
             System.out.println("Sending: " + text);
-            String result = printString(text, hn);
-            System.out.println("Result: " + result);
+            String result = runProgram(server, client, text);
+            argsN=0;
         } else {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            runProgram(server, client);
+        }
+
+        communicator.shutdown();
+        communicator.destroy();
+    }
+
+    public static void runProgram(PrinterPrx server, CallbackPrx client) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String hostname = InetAddress.getLocalHost().getHostName();
             boolean exitFlag = false;
-
             while (!exitFlag) {
-                System.out.println("Enter a number (type 'exit' to quit)");
-                System.out.print(hn);
-                String txt = br.readLine();
+                System.out.println("What do you want to do?  \n 1. Calculate fibonacci (enter a number) \n 2. List available hosts (list clients) \n 3. Send a message to everyone (bc <<msg>>) \n 4. Send a message to someone (to <<host:msg>>) \n 5. exit ");
+                String message = br.readLine();
 
-                if (txt.equalsIgnoreCase("exit")) {
+                if (message.equalsIgnoreCase("exit")) {
                     exitFlag = true;
                 } else {
-                    String result = printString(txt, hn);
-                    System.out.println("Result: " + result);
+                    server.printString(message,hostname, client);
+                    String result = client.waitForResult(); // Esperar el resultado del servidor
                 }
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
-    private static String printString(String text, String hn) {
+    public static void showTime(long elapsed) {
+        long elapsedMillis = TimeUnit.MILLISECONDS.convert(elapsed, TimeUnit.NANOSECONDS);
+        long elapsedSecs = TimeUnit.SECONDS.convert(elapsed, TimeUnit.NANOSECONDS);
+        System.out.println("Time: " + (elapsedMillis) + " ms, " + (elapsedSecs) + " s");
+    }
 
-        try (com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(new String[0], "client.cfg")) {
-            com.zeroc.Ice.ObjectPrx base = communicator.propertyToProxy("Service.Proxy");
-            Demo.PrinterPrx printer = Demo.PrinterPrx.checkedCast(base);
-            com.zeroc.Ice.ObjectAdapter adapter = communicator.createObjectAdapter("Callback");
-            com.zeroc.Ice.Object object = new CallbackI();
-            com.zeroc.Ice.ObjectPrx objPrx= adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("callback"));
-            adapter.activate();
+    public static Demo.CallbackPrx clientConfiguration() {
+        ObjectAdapter adapter = communicator.createObjectAdapter("Callback.Client");
+        com.zeroc.Ice.Object obj = new CallbackI();
+        ObjectPrx objectPrx = adapter.add(obj, Util.stringToIdentity("callback"));
+        adapter.activate();
+        return Demo.CallbackPrx.uncheckedCast(objectPrx);
+    }
 
-            if (printer == null) {
-                throw new Error("Invalid proxy");
-            }
-            Demo.CallbackPrx callPrx = Demo.CallbackPrx.uncheckedCast(objPrx);
-            return printer.printString(text,hn,callPrx);
+    public static Demo.PrinterPrx serverConfiguration() {
+        Demo.PrinterPrx twoway = Demo.PrinterPrx
+                .checkedCast(communicator.propertyToProxy("Printer.Proxy")).ice_twoway().ice_secure(false);
+        return twoway.ice_twoway();
+    }
+
+
+    public static String runProgram(PrinterPrx server, CallbackPrx client, String message) {
+        try {
+            String hostname = InetAddress.getLocalHost().getHostName();
+            server.printString(message,hostname, client);
+            return client.waitForResult();
+            
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
         }
     }
 }

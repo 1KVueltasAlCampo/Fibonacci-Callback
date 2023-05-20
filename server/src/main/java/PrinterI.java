@@ -1,67 +1,23 @@
-import java.math.BigInteger;
+import com.zeroc.Ice.Current;
 
-public class PrinterI implements Demo.Printer
-{
-    public String printString(String s,String hostname,Demo.CallbackPrx cl com.zeroc.Ice.Current current)
-    {
-		new Thread(()->{
+import Demo.CallbackPrx;
 
-			generateAnswer(s, hostname);
-			try{
-			Thread.sleep(2000);
-			cl.response("rutina terminada");
-		}catch(Exception e){
-		}
-			  }).start();        
-				 
-    	
-    }
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-	private String generateAnswer(String s, String hostname){
-		String response = "";
-		if(s.matches("[0-9]+")){
-			long num = Long.parseLong(s);
-        	System.out.print(hostname);
-			response = fibonacci(num);
-		}
-		else{
-			System.out.println(0);
-			response = "0";
-		}
+public class PrinterI implements Demo.Printer {
 
-		System.out.println("");
-		return response+"";
-	}
-
-
-    private String fibonacci(long posicion) {
-        BigInteger siguiente = BigInteger.valueOf(1), actual = BigInteger.valueOf(0), temporal = BigInteger.valueOf(0);
-		for (long x = 1; x <= posicion; x++) {
-			temporal = actual;
-			actual = siguiente;
-			siguiente = siguiente.add(temporal);
-			System.out.print((x == posicion)?actual.toString(0):(actual.toString(0)+","));
-		}
-		// Si no quieres imprimirla, comenta la siguiente línea:
-		return actual.toString(0);
-		
-	}
-}
-
-public class PrinterI implements Demo.Printer
-{
-    public void printString(String s, Demo.CallbackPrx  cl, com.zeroc.Ice.Current current)
-    {
-	new Thread(()->{
-
-	System.out.println(s);
-	try{
-	Thread.sleep(2000);
-	cl.response("rutina terminada");
-}catch(Exception e){
-}
-      }).start();        
-         
-
+    @Override
+    public String printString(String message, String hostname, CallbackPrx proxy, Current current) {
+        Handler handler = Handler.getInstance();
+        Logic logic = new Logic(hostname+":"+message, proxy, Handler.getInstance());
+        handler.addClient(hostname, proxy);
+        Future<String> future = handler.executeTask(logic);
+        try {
+            return future.get(); // Espera y obtiene el resultado de la tarea
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return "Error al ejecutar la tarea"; // Manejo de error
     }
 }
