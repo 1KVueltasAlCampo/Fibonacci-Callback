@@ -1,28 +1,4 @@
-Sending: 24
-Sending: 24
-Sending: 24
-Sending: 24
-Result: 46368
-Result: 46368
-Result: 46368
-Result: 46368
-Sending: 24
-Sending: 24
-Result: 46368
-Result: 46368
-Sending: 24
-Sending: 24
-Sending: 24
-Result: 46368
-Result: 46368
-Result: 46368
-Sending: 24
-Result: 46368
-Sending: 24
-Result: 46368
-Sending: 24
-Result: 46368
-Sending: 24
-Result: 46368
-Sending: 24
-Result: 46368
+Sending: 4
+Server response: 3
+Waiting for result...
+Result: 3

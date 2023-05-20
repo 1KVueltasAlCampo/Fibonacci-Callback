@@ -5,7 +5,7 @@ server_id="swarch@xhgrid6"
 path="fbcallbackJDJS"
 log_file="server_log.txt"
 
-# Ingresar al servidor y matar los procesos que utilizan el puerto 1234
+# Detener la ejecución del archivo JAR en el servidor
 sshpass -p $password ssh $server_id "cd $path && pkill -f 'java -jar'"
 
 # Ejecutar el archivo JAR en el servidor, redirigir la salida al archivo de log y a la consola

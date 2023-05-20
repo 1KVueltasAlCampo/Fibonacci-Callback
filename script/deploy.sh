@@ -19,11 +19,12 @@ sshpass -p $password scp ../server/build/libs/server.jar $server_id:./$path
 cd ../
 
 function gradleBuild {
-
     id=$1
-
+    cd ./client/src/main/resources
+    newClientId=$((start+id))
+    sed -i "s/^Callback.Client.Endpoints=default -h 192.168.131.*/Callback.Client.Endpoints=default -h 192.168.131.$newClientId/" client.cfg
+    cd ../../../../
     gradle build &
-
     wait
 
 }

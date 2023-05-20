@@ -19,6 +19,8 @@ public interface Callback extends com.zeroc.Ice.Object
 {
     void response(String rs, com.zeroc.Ice.Current current);
 
+    String waitForResult(com.zeroc.Ice.Current current);
+
     /** @hidden */
     static final String[] _iceIds =
     {
@@ -61,6 +63,24 @@ public interface Callback extends com.zeroc.Ice.Object
         return inS.setResult(inS.writeEmptyParams());
     }
 
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_waitForResult(Callback obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        String ret = obj.waitForResult(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeString(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
     /** @hidden */
     final static String[] _iceOps =
     {
@@ -68,7 +88,8 @@ public interface Callback extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
-        "response"
+        "response",
+        "waitForResult"
     };
 
     /** @hidden */
@@ -103,6 +124,10 @@ public interface Callback extends com.zeroc.Ice.Object
             case 4:
             {
                 return _iceD_response(this, in, current);
+            }
+            case 5:
+            {
+                return _iceD_waitForResult(this, in, current);
             }
         }
 
